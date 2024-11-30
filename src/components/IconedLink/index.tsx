@@ -13,7 +13,7 @@ const IconedLink = ({ children }: PropsWithChildren<never>) => {
             React.Children.only(children),
             {},
             <>
-                <LinkIcon className={styles.linkIcon} />
+                <LinkIcon className={styles.linkIcon} aria-hidden />
                 { (React.Children.only(children) as ReactElement).props.children }
             </>)
         }
