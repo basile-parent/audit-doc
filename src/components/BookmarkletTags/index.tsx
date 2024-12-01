@@ -6,7 +6,7 @@ type BookmarkletTagProps = HTMLAttributes<HTMLDivElement> & {
     names: string[]
 }
 const BookmarkletTags = ({ names, className, ...otherProps}: Omit<BookmarkletTagProps, "children">) => (
-    <div className={styles.bookmarkletTagsWrapper}>
+    <div className={`${styles.bookmarkletTagsWrapper} ${className ?? ""}`} {...otherProps}>
         Bookmarklets:
         <ul>
             {
