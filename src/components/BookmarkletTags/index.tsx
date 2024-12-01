@@ -1,5 +1,6 @@
 import {HTMLAttributes} from "react";
 import styles from "./styles.module.css"
+import Link from "@docusaurus/Link";
 
 type BookmarkletTagProps = HTMLAttributes<HTMLDivElement> & {
     names: string[]
@@ -10,7 +11,7 @@ const BookmarkletTags = ({ names, className, ...otherProps}: Omit<BookmarkletTag
         <ul>
             {
                 names.map(name => (
-                    <li key={name} className={styles.bookmarkletTag}>{ name }</li>
+                    <li key={name} className={styles.bookmarkletTag}><Link to="/docs/resources/bookmarklets">{ name }</Link></li>
                 ))
             }
         </ul>
