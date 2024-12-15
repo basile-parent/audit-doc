@@ -25,11 +25,7 @@ type BookmarkletTagProps = Omit<ToolProps, "children" | "links"> & {
 }
 export const BookmarkletTags = ({names, className, ...otherProps}: BookmarkletTagProps) => (
     <Tools label="Bookmarklets"
-           links={names.map(name => (
-               <li key={name} className={styles.bookmarkletTag}>
-                   <Link to="/docs/resources/bookmarklets">{name}</Link>
-               </li>
-           ))}
+           links={names.map(name => <Link to="/docs/resources/bookmarklets">{name}</Link>)}
            {...otherProps}/>
 );
 
@@ -39,11 +35,7 @@ type ExtensionsTagsProps = Omit<ToolProps, "children" | "links"> & {
 }
 export const ExtensionsTags = ({names, className, ...otherProps}: ExtensionsTagsProps) => (
     <Tools label="Extensions"
-           links={names.map(name => (
-               <li key={name} className={styles.bookmarkletTag}>
-                   <Link to="/docs/resources/extensions">{name}</Link>
-               </li>
-           ))}
+           links={names.map(name => <Link to="/docs/resources/extensions">{name}</Link>)}
            {...otherProps}/>
 );
 
