@@ -1,0 +1,55 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    # Exécuter uniquement lorsque les fichiers du site sont modifiés
+    paths:
+      - 'docs/**'
+      - 'src/**'
+      - 'static/**'
+      - 'sidebars.ts'
+      - 'docusaurus.config.ts'
+      - 'package.json'
+      - '.github/workflows/deploy.yml'
+  # Permettre le déclenchement manuel depuis l'interface GitHub
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build website
+        run: npm run build
+
+      # Configuration populaire pour déployer sur GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Répertoire de build du site Docusaurus
+          publish_dir: ./encrypted_build/build
+          # Configuration de l'utilisateur Git pour l'historique de déploiement
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          # Conserver l'historique des déploiements
+          keep_files: false
+          # Désactiver jekyll (important pour Docusaurus)
+          enable_jekyll: false
+          # Message de commit personnalisé
+          commit_message: 'Docs: déploiement du site mis à jour'
