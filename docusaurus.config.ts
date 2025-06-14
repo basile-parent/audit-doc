@@ -7,7 +7,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
     title: 'Documentation audit RGAA',
     tagline: '',
-    favicon: 'img/favicon.ico',
+    favicon: "img/favicon_dark.png",
     noIndex: true,
 
     // Set the production url of your site here
