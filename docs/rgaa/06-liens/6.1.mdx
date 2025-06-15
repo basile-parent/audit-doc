@@ -3,3 +3,178 @@ title: 6.1 Lien explicite
 robots: noindex
 sidebar_position: 1
 ---
+
+import IconedLink from '@site/src/components/IconedLink';
+import {CriteriaA} from '@site/src/components/CriteriaTag';
+import { BookmarkletTags } from '@site/src/components/ToolsLinks';
+import Example from "@site/src/components/Example";
+import NCBooking from './assets/6.1-nc-booking.png';
+import CGouv from './assets/6.1-c-datagouv.png';
+import NCFakir from './assets/6.1-nc-fakir.png';
+
+# Chaque [lien](https://accessibilite.numerique.gouv.fr/methode/glossaire/#lien) est-il explicite (hors cas particuliers) ?
+
+<CriteriaA/>
+<IconedLink>[Lien RGAA](https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#6.1)</IconedLink>
+<BookmarkletTags names={["06 - Liens", "Compléments/List links"]} />
+
+## Rappels
+**Lien explicite** =
+- le nom accessible du lien doit permettre de comprendre la fonction et la destination du lien.
+- le nom visible doit être contenu dans le nom accessible (impératif pour les utilisateurs de **commandes vocales**).
+Le nom visible peut être :
+    - Le texte HTML visible (CSS activé)
+    - Le texte lisible d’une image contenue dans le lien
+- si un lien possède une infobulle (attribut `title`), le texte de l’infobulle reprend au moins le nom accessible issu
+du contenu du lien.
+_On n’invalide pas : les `title` vides ou les `title` identiques aux noms accessibles._
+
+L’intitulé de chaque lien peut être rendu explicite :
+- par son intitulé texte seul (nom accessible) ;
+- ou grâce à son contexte : titre précédent (ex. `<h2>`), paragraphe, phrase, `title` que les utilisateurs peuvent
+exploiter grâce aux fonctionnalités de leur technologie d’assistance.
+
+:::warning
+
+Les liens aux **intitulés identiques** et qui mènent vers des **pages différentes** seront considérés non conformes,
+**si le contexte des liens ne permet pas de les différencier** (voir l'exemple de Fakir).
+
+:::
+
+:::note
+
+On ne vérifie pas dans ce critère la visibilité des **liens en environnement de texte**. Ce point sera vérifié par
+le [critère 10.6](../presentation/10.6).
+
+:::
+
+<details>
+    <summary>
+        ## Exemples de calcul du nom accessible
+    </summary>
+
+    `<a href="page.html">Connexion</a>`
+
+    Nom accessible : « Connexion ». Le contenu du lien est le nom accessible.
+
+    `<a href="page.html"><img src="img.png" alt="Connexion"  /></a>`
+
+    Nom accessible : « Connexion ». L’alternative de l’image contenue dans le lien constitue le nom accessible.
+
+    `<a href="page.html" aria-label="Page de connexion à mon espace personnel"><img src="img.png" alt="Connexion"  /></a>`
+
+    Nom accessible : « Page de connexion à mon espace personnel » . Le contenu du lien n’est plus pris en compte
+    dans le calcul du nom accessible, c’est le contenu de la propriété aria-label sur le lien qui constitue
+    le nom accessible du lien.
+</details>
+
+<details>
+    <summary>
+        ## Exemples
+    </summary>
+
+    <Example imgImport={NCBooking}>
+        Sur le site [booking.com](https://www.booking.com/), le lien d’inscription a un nom visible « S’inscrire » et
+        un nom accessible déterminé par la propriété `aria-label` qui une fois calculé donne « Créer un compte ».
+        Le nom visible n'est pas repris dans le nom accessible.
+
+        **Proposition de correction** : Reprendre le nom visible dans la propriété `aria-label`, ou supprimer la propriété
+
+        ```html
+<a href="..." aria-label="S'inscrire - Créer un compte">S'inscrire</a>
+<a href="..." >S'inscrire</a>
+        ```
+    </Example>
+
+    <Example imgImport={CGouv} comply>
+        Sur le site [data.gouv.fr](https://www.data.gouv.fr/fr/datasets/5fc7bd499a1944cb674fd064/) : le lien data.gouv.fr
+        contient un svg avec du texte lisible qui détermine son nom visible « data.gouv.fr ». Le nom accessible du lien
+        est déterminé par la propriété `aria-label="data.gouv.fr"` présente sur la balise svg. Le nom accessible
+        contient le nom visible.
+    </Example>
+
+    <Example imgImport={NCFakir}>
+        Sur le site [fakirpresse.info](https://www.fakirpresse.info/), on trouve plusieurs liens « Tout voir » qui
+        mènent vers des pages différentes. Aucun élément de contexte ne permet de les distinguer, en effet, les titres
+        précédents sont les titres des actualités et non pas des catégories (ex. « Les livres »), ce qui ne permet pas
+        de les rendre explicites.
+    </Example>
+
+    <Example>
+        `<a href="..." title="3 nouveaux messages">Espace privé</a>`
+
+        L’attribut title ne reprend pas l’information issue du contenu du lien ("Espace privé").
+        Exemple de correction :
+
+        `<a href="..." title="Espace privé : 3 nouveaux messages">Espace privé</a>`
+    </Example>
+</details>
+
+## Cas particuliers
+
+Il existe une gestion de cas particuliers pour les tests 6.1.1, 6.1.2, 6.1.3 et 6.1.4 lorsque le lien est
+[ambigu pour tout le monde](https://accessibilite.numerique.gouv.fr/methode/glossaire/#ambigu-pour-tout-le-monde).
+Dans cette situation, où il n’est pas possible de rendre le lien explicite dans son contexte, le critère est
+non applicable.
+
+Il existe une gestion de cas particuliers pour le test 6.1.5 lorsque :
+
+*   La ponctuation et les lettres majuscules sont présentes dans le texte de
+l’[intitulé visible](https://accessibilite.numerique.gouv.fr/methode/glossaire/#intitule-visible) :
+elles peuvent être ignorées dans le nom accessible sans porter à conséquence
+*   Le texte de l’[intitulé visible](https://accessibilite.numerique.gouv.fr/methode/glossaire/#intitule-visible)
+sert de symbole : le texte ne doit pas être interprété littéralement au niveau du nom accessible. Le nom doit
+exprimer la fonction véhiculée par le symbole (par exemple, “B” au niveau d’un éditeur de texte aura pour
+nom accessible “Mettre en gras”, le signe “>” en fonction du contexte signifiera “Suivant” ou “Lancer la vidéo”).
+Le cas des symboles mathématiques fait cependant exception (voir la note ci-dessous).
+
+Note : si l’étiquette visible représente une expression mathématique, les symboles mathématiques peuvent être
+repris littéralement pour servir d’étiquette au nom accessible (ex. : “A>B”). Il est laissé à l’utilisateur
+le soin d’opérer la correspondance entre l’expression et ce qu’il doit épeler compte tenu de la connaissance
+qu’il a du fonctionnement de son logiciel de saisie vocale (“A plus grand que B” ou “A supérieur à B”).
+
+## Notes techniques
+
+Lorsque l’intitulé visible est complété par une autre expression dans le nom accessible :
+
+*   WCAG insiste sur le placement de l’intitulé visible au début du nom accessible sans toutefois réserver
+l’exclusivité de cet emplacement
+*   WCAG considère comme un cas d’échec une correspondance non exacte de la chaîne de caractères de l’intitulé
+visible au sein du nom accessible.
+
+Par exemple, si l’on considère l’intitulé visible « Commander maintenant » complété dans le nom accessible
+par l’expression « produit X », on peut avoir les différents cas suivants :
+
+*   « Commander maintenant produit X » est valide (bonne pratique)
+*   « Produit X : commander maintenant » est valide
+*   « Commander produit X maintenant » est non valide.
+
+## Références
+
+### WCAG 2.1
+
+#### Critère(s) de succès :
+
+*   [1.1.1 (A)](https://www.w3.org/Translations/WCAG21-fr/#non-text-content "critère 1.1.1 (A) - nouvelle fenêtre")
+*   [2.4.4 (A)](https://www.w3.org/Translations/WCAG21-fr/#link-purpose-in-context "critère 2.4.4 (A) - nouvelle fenêtre")
+*   [2.5.3 (A)](https://www.w3.org/Translations/WCAG21-fr/#label-in-name "critère 2.5.3 (A) - nouvelle fenêtre")
+
+#### Technique(s) suffisante(s) et/ou échec(s) (en anglais) :
+
+*   [H30](https://www.w3.org/WAI/WCAG21/Techniques/html/H30 "H30 - nouvelle fenêtre")
+*   [H78](https://www.w3.org/WAI/WCAG21/Techniques/html/H78 "H78 - nouvelle fenêtre")
+*   [H79](https://www.w3.org/WAI/WCAG21/Techniques/html/H79 "H79 - nouvelle fenêtre")
+*   [H80](https://www.w3.org/WAI/WCAG21/Techniques/html/H80 "H80 - nouvelle fenêtre")
+*   [H81](https://www.w3.org/WAI/WCAG21/Techniques/html/H81 "H81 - nouvelle fenêtre")
+*   [G53](https://www.w3.org/WAI/WCAG21/Techniques/general/G53 "G53 - nouvelle fenêtre")
+*   [G91](https://www.w3.org/WAI/WCAG21/Techniques/general/G91 "G91 - nouvelle fenêtre")
+*   [F63](https://www.w3.org/WAI/WCAG21/Techniques/failures/F63 "F63 - nouvelle fenêtre")
+*   [F89](https://www.w3.org/WAI/WCAG21/Techniques/failures/F89 "F89 - nouvelle fenêtre")
+*   [ARIA7](https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA7 "ARIA7 - nouvelle fenêtre")
+*   [ARIA8](https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA8 "ARIA8 - nouvelle fenêtre")
+
+### EN 301 549 V2.1.2 (2018-08) (en anglais)
+
+*   9.1.1.1 Non-text Content (A)
+*   9.2.4.4 Link Purpose (In Context) (A)
+*   9.2.5.3 Label in Name (A)
