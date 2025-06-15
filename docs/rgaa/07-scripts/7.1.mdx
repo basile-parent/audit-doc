@@ -1,5 +1,213 @@
 ---
-title: 7.1 Script accessible
+title: 7.1 Scripts compatibles
 robots: noindex
 sidebar_position: 1
 ---
+
+import IconedLink from '@site/src/components/IconedLink';
+import {CriteriaA} from '@site/src/components/CriteriaTag';
+import { BookmarkletTags } from '@site/src/components/ToolsLinks';
+import Example from "@site/src/components/Example";
+import { AriaPressedButton, ChangeLabelWhenPressedButton } from "@site/src/components/LiveExamples";
+import COrijime from './assets/7.1-c-orejime.png';
+import CMarseille from './assets/7.1-c-marseille.png';
+import NCFurets from './assets/7.1-nc-furets.png';
+
+# Chaque [script](https://accessibilite.numerique.gouv.fr/methode/glossaire/#script) est-il, si nécessaire, [compatible avec les technologies d’assistance](https://accessibilite.numerique.gouv.fr/methode/glossaire/#compatible-avec-les-technologies-d-assistance) ?
+
+<CriteriaA/>
+<IconedLink>[Lien RGAA](https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#7.1)</IconedLink>
+<BookmarkletTags names={["07.1 - Scripts"]} />
+
+## Que vérifie-t-on ?
+
+### Rôle pertinent
+Tout composant interactif doit avoir un rôle et celui-ci doit être pertinent.
+
+Par exemple :
+- Un composant qui déclenche l’ouverture d’une page ou d’un onglet doit être un lien.
+- Un composant qui déclenche un événement dans la page, qui est le support d’une fonction JavaScript, doit être un bouton ou implémenter le motif ARIA button.
+
+Cas de non-conformités :
+- Un lien qui déclenche l’ouverture d’une fenêtre modale (on recommandera d’employer un bouton ou le motif ARIA button).
+- Un composant qui permet de filtrer dynamiquement des résultats, accessible au clavier, mais sans rôle accessible défini.
+
+<details>
+    <summary>
+        #### Exemples
+    </summary>
+
+    <Example imgImport={COrijime} comply>
+        Dans la page de présentation [orejime.fr](https://orejime.empreintedigitale.fr/),
+        les composants « Accept », « Decline » et « Learn more » déclenchent des événements JavaScript et sont
+        implémentés dans des éléments `button`.
+    </Example>
+</details>
+
+
+### Nom accessible pertinent
+Tout composant interactif doit avoir un nom accessible pertinent
+
+Le nom accessible doit toujours **reprendre le nom visible**.
+
+<details>
+    <summary>
+        #### Exemples
+    </summary>
+
+    **Cas typiques de non-conformités :**
+    - Le bouton de fermeture d’une fenêtre modale, symbolisé visuellement par une croix, mais sans nom accessible.
+    - Un potentiomètre permettant de faire varier une valeur, avec un nom visible, mais pas de nom accessible.
+
+    <Example>
+        `<button>X</button>`
+
+        Le nom accessible du bouton n’est pas pertinent.
+    </Example>
+    <Example comply>
+        `<button aria-label="fermer la fenêtre modale">X</button>`
+
+        Le nom accessible est constitué par la propriété `aria-label`.
+    </Example>
+
+    <Example>
+        `<button aria-label="revenir à la page d’accueil">Fermer</button>`
+
+        Le nom visible est constitué du texte de la balise `button` « Fermer » et le nom accessible est construit
+        à partir du contenu de `aria-label` « revenir à la page d’accueil ». Le nom visible n’est pas contenu dans le
+        nom accessible.
+    </Example>
+
+    <Example imgImport={CMarseille} comply>
+        Sur la page d’accueil de [marseille.fr](https://www.marseille.fr/),
+        le composant « voir plus d’accès rapide » permet d’afficher plus d’éléments, c’est un élément
+        `button` avec un nom accessible pertinent.
+    </Example>
+</details>
+
+### État et changements d’état pertinents
+Si nécessaire, l’état (et les changements d’état) ou la valeur du composant sont accessibles aux API d’accessibilité.
+
+Selon l’information à véhiculer, il est possible d’informer les utilisateurs des états, changements d’états ou valeurs
+du composant de différentes manières :
+
+- l’état sélectionné d’un bouton (dans une liste de bouton par exemple) pourra employer la propriété
+`aria-pressed="true"` (attention, l’état sélectionné peut être rendu par différentes propriétés en fonction du
+contexte, notamment dans le cas de motifs de conception)
+- lorsqu’un composant est inactif, c’est-à-dire qu’aucune action n’est possible, on utilisera l’attribut `disabled`
+- lorsqu’un composant change d’état, que sa fonctionnalité est modifiée, on peut également passer par un changement
+de nom accessible ou de description (par exemple, la transformation d’un bouton lecture en pause, on vérifiera
+que l’intitulé a bien été modifié pour retranscrire la fonctionnalité qui sera déclenchée à la prochaine activation
+du bouton, pas uniquement l’apparence visuelle).
+
+<details>
+    <summary>
+        #### Exemples
+    </summary>
+
+    <Example>
+        <AriaPressedButton>Filtrer par nom</AriaPressedButton>
+        ```html
+<button aria-pressed="false">Filtrer par nom</>
+<button aria-pressed="true">Filtrer par nom</>
+        ```
+
+        L’état sélectionné est donné par la couleur et par une propriété
+        qui peut être exploitée par les technologies d’assistance.
+    </Example>
+
+    <Example>
+        <ChangeLabelWhenPressedButton childrenWhenPressed="Pause">Lecture</ChangeLabelWhenPressedButton>
+        ```html
+<button>Lecture</button>
+<button>Pause</button>
+        ```
+
+        Le nom accessible est modifié pour indiquer la fonction qui sera déclenchée à la prochaine activation du bouton.
+    </Example>
+</details>
+
+## Aide à la détection : nom, rôle et état
+<BookmarkletTags names={["07.1 - Scripts"]} />
+
+- Identifier tous les composants qui déclenchent des événements dans la page.
+- Pour chacun, vérifier qu'il est entouré par le bookmarklet.
+- Si oui, vérifier que le rôle présenté correspond à la fonction (bouton par exemple).
+- Si oui, vérifier que le nom accessible est pertinent (et qu'il reprend le nom visible, s'il est différent).
+- Si le composant présente un état (pressé par exemple), vérifier que cet état est disponible
+(soit dans la description soit grâce à une propriété) et que l'état décrit est pertinent avec l'état affiché.
+
+
+<details>
+    <summary>
+        ### Exemples
+    </summary>
+
+    <Example imgImport={NCFurets}>
+        Dans le formulaire de simulation des [furets.com](https://www.lesfurets.com/credit-conso/formulaire#/FORM),
+        la liste déroulante « Quel type de prêt recherchez-vous ? » n’est pas identifiée par le bookmarklet,
+        ce qui indique qu’elle n’a aucun rôle.
+
+        Cette liste devrait être soit une liste `select` soit une liste ARIA construite à partir du motif `listbox`
+    </Example>
+</details>
+
+
+## Cas particuliers
+
+Il existe une gestion de cas particuliers pour le test 7.1.3 lorsque :
+
+*   La ponctuation et les lettres majuscules sont présentes dans le texte de l’intitulé visible : elles peuvent être
+ignorées dans le nom accessible sans porter à conséquence
+*   Le texte de l’intitulé visible sert de symbole : le texte ne doit pas être interprété littéralement au niveau
+du nom accessible. Le nom doit exprimer la fonction véhiculée par le symbole (par exemple, “B” au niveau d’un éditeur
+de texte aura pour nom accessible “Mettre en gras”, le signe “>” en fonction du contexte signifiera “Suivant” ou
+“Lancer la vidéo”). Le cas des symboles mathématiques fait cependant exception (voir la note ci-dessous).
+
+Note : si l’étiquette visible représente une expression mathématique, les symboles mathématiques peuvent être repris
+littéralement pour servir d’étiquette au nom accessible (ex. : “A>B”). Il est laissé à l’utilisateur le soin d’opérer
+la correspondance entre l’expression et ce qu’il doit épeler compte tenu de la connaissance qu’il a du fonctionnement
+de son logiciel de saisie vocale (“A plus grand que B” ou “A supérieur à B”).
+
+## Notes techniques
+
+Le critère 7.1 implémente la notion de « compatible avec les technologies d’assistance » telle que définie par
+les WCAG, ainsi que le recours à WAI-ARIA pour rendre un composant ou une fonctionnalité accessible. Le bon usage
+de WAI-ARIA est vérifié via les tests 7.1.1, 7.1.2, 7.1.3.
+
+Note importante : dans un environnement HTML5, beaucoup de composants peuvent nécessiter JavaScript pour fonctionner ;
+en conséquence la fourniture d’une alternative à un composant JavaScript qui ne pourrait pas être rendu accessible
+devra bénéficier d’une méthode spécifique au composant en cause, permettant de le remplacer par une alternative
+accessible (et de le réactiver). Cela signifie que la désactivation de JavaScript pour l’ensemble de la page ne sera
+pas acceptée comme une méthode valable, à moins qu’elle ne remette pas en cause l’utilisation des autres composants.
+
+## Références
+
+### WCAG 2.1
+
+#### Critère(s) de succès :
+
+*   [2.5.3 (A)](https://www.w3.org/Translations/WCAG21-fr/#label-in-name "critère 2.5.3 (A) - nouvelle fenêtre")
+*   [4.1.2 (A)](https://www.w3.org/Translations/WCAG21-fr/#name-role-value "critère 4.1.2 (A) - nouvelle fenêtre")
+
+#### Technique(s) suffisante(s) et/ou échec(s) (en anglais) :
+
+*   [G10](https://www.w3.org/WAI/WCAG21/Techniques/general/G10 "G10 - nouvelle fenêtre")
+*   [G135](https://www.w3.org/WAI/WCAG21/Techniques/general/G135 "G135 - nouvelle fenêtre")
+*   [G136](https://www.w3.org/WAI/WCAG21/Techniques/general/G136 "G136 - nouvelle fenêtre")
+*   [F15](https://www.w3.org/WAI/WCAG21/Techniques/failures/F15 "F15 - nouvelle fenêtre")
+*   [F19](https://www.w3.org/WAI/WCAG21/Techniques/failures/F19 "F19 - nouvelle fenêtre")
+*   [F20](https://www.w3.org/WAI/WCAG21/Techniques/failures/F20 "F20 - nouvelle fenêtre")
+*   [F42](https://www.w3.org/WAI/WCAG21/Techniques/failures/F42 "F42 - nouvelle fenêtre")
+*   [F59](https://www.w3.org/WAI/WCAG21/Techniques/failures/F59 "F59 - nouvelle fenêtre")
+*   [F79](https://www.w3.org/WAI/WCAG21/Techniques/failures/F79 "F79 - nouvelle fenêtre")
+*   [ARIA4](https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA4 "ARIA4 - nouvelle fenêtre")
+*   [ARIA5](https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA5 "ARIA5 - nouvelle fenêtre")
+*   [ARIA18](https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA18 "ARIA18 - nouvelle fenêtre")
+*   [ARIA19](https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA19 "ARIA19 - nouvelle fenêtre")
+*   [SCR21](https://www.w3.org/WAI/WCAG21/Techniques/client-side-script/SCR21 "SCR21 - nouvelle fenêtre")
+
+### EN 301 549 V2.1.2 (2018-08) (en anglais)
+
+*   9.2.5.3 Label in Name (A)
+*   9.4.1.2 Name, Role, Value (A)

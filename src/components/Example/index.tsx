@@ -31,19 +31,21 @@ const Example = ({className, imgImport, children, comply, special, ...otherProps
     }
 
     return (
-        <figure className={`${styles.wrapper} ${styles.figure} ${className ?? ""}`} {...otherProps}>
-            <img src={imgImport} alt="Image d'exemple"/>
-            <figcaption>
-                {
-                    special ?
-                        <span className={styles.special}>Cas particulier</span> :
-                    comply ?
-                        <p className={styles.compliance}><span aria-hidden>✓</span> Conforme</p> :
-                        <p className={styles.nonCompliance}><span aria-hidden>X</span> Non conforme</p>
-                }
-                {children}
-            </figcaption>
-        </figure>
+        <div className={`${styles.wrapper} ${className ?? ""}`} {...otherProps}>
+            <figure className={styles.figure}>
+                <img src={imgImport} alt="Image d'exemple"/>
+                <figcaption>
+                    {
+                        special ?
+                            <span className={styles.special}>Cas particulier</span> :
+                        comply ?
+                            <p className={styles.compliance}><span aria-hidden>✓</span> Conforme</p> :
+                            <p className={styles.nonCompliance}><span aria-hidden>X</span> Non conforme</p>
+                    }
+                    {children}
+                </figcaption>
+            </figure>
+        </div>
     );
 };
 
