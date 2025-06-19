@@ -77,6 +77,12 @@ const config: Config = {
                     position: 'left',
                     label: 'Ressources',
                 },
+                {
+                    type: 'docSidebar',
+                    sidebarId: 'faqSidebar',
+                    position: 'left',
+                    label: 'FAQ',
+                },
             ],
         },
         footer: {
