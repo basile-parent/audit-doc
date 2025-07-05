@@ -83,6 +83,11 @@ const config: Config = {
                     position: 'left',
                     label: 'FAQ',
                 },
+                {
+                    to: 'pathname:///slides/index.html',
+                    position: 'left',
+                    label: 'Slides 🗗',
+                },
             ],
         },
         footer: {
